@@ -161,8 +161,6 @@ cython_debug/
 
 # Other files
 bad.py
-fetch_spacex_images.py
 images/
 nasa_apod/
 nasa_epic/
-test/
