@@ -9,9 +9,9 @@ import os
 def main():
     image_parser = argparse.ArgumentParser(
         description='''Program downloads pictures of SpaceX launches.
-                    If no 'ID' and no 'Path' has given, the program will
-                    download pictures from the latest launch and place it
-                    on Desktop for Windows and in /home/user on Linux'''
+                    If no 'ID' and 'Path' are given, the program will
+                    download pictures from the last launch and place them
+                    on Windows desktop and in /home/user on Linux'''
     )
     image_parser.add_argument('-i', '--id', default='latest', type=str,
                               help='enter the launch ID to download images.')
