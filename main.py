@@ -38,12 +38,12 @@ def fetch_spacex_launch(path_to_save, id='latest'):
 
 def download_apod(path_to_save, date="", start_date="", end_date=""):
     check_or_create_path(path_to_save)
-    print("Enter date (YYYY-MM-DD) to download only 1 Astronomy",
+    print("\nEnter date (YYYY-MM-DD) to download only 1 Astronomy",
           "Picture of the Day(APOD)\nor skip(press ENTER) to download",
           "more than 1 image:")
     date = input()
     if not date:
-        print("Enter 'start date' and 'end date' to download a few APOD.")
+        print("\nEnter 'start date' and 'end date' to download a few APOD.")
         start_date = input("Start date (YYYY-MM-DD): ")
         end_date = input("End date (YYYY-MM-DD): ")
     print("Downloading Astronomy Picture of the Day...")
@@ -75,11 +75,11 @@ def download_apod(path_to_save, date="", start_date="", end_date=""):
         Image.open(BytesIO(image_response)).save(
             f"{path_to_save}/{filename}{extension}"
             )
-    print("All images has been downloaded!\n")
+    print("All images have been downloaded!\n")
 
 
 def download_epic(path_to_save, extension="png"):
-    print("Downloading daily natural color imagery of Earth...")
+    print("Downloading daily natural color imagery of Earth(EPIC)...")
     check_or_create_path(path_to_save)
     load_dotenv(find_dotenv())
     nasa_api_key = os.environ["NASA_API_KEY"]
@@ -101,11 +101,11 @@ def download_epic(path_to_save, extension="png"):
         Image.open(BytesIO(image_response.content)).save(
             f"{path_to_save}/{name_image}"
             )
-    print("All images has been downloaded!")
+    print("All images have been downloaded!")
 
 
 def main():
-    new_path = input("Enter a path to save images")
+    new_path = input("Enter a path to save images: ")
     fetch_spacex_launch(f"{new_path}/images", "5eb87d42ffd86e000604b384")
     download_apod(f"{new_path}/nasa_apod")
     download_epic(f"{new_path}/nasa_epic")
