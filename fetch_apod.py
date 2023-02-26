@@ -63,7 +63,7 @@ def main():
         Image.open(BytesIO(image_response.content)).save(
             f"{args.path}/{filename}{extension}"
             )
-        print(f'File "{filename}{extension}" has been succesfully downloaded')
+        print(f'File "{filename}{extension}" has been successfully downloaded')
 
 
 if __name__ == "__main__":
