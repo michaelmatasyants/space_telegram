@@ -9,7 +9,7 @@ from spacex_nasa_api import get_filename_extension
 
 
 def main():
-    nasa_api_key = get_api_key()
+    nasa_api_key = get_api_key()['nasa_api_key']
     image_parser = argparse.ArgumentParser(
         description='''Program downloads Astronomy Picture Of the Day (APOD).
                        If no date (or start_date, end_date) and path are given,
