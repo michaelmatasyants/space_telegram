@@ -22,7 +22,7 @@ def main():
     spacex_nasa_api.check_create_path(args.path)
     url = "https://api.nasa.gov/EPIC"
     data_gathering_url = f"{url}/api/natural"
-    payload = {"api_key": f"{spacex_nasa_api.get_api_key()}"}
+    payload = {"api_key": f"{spacex_nasa_api.get_api_key()['nasa_api_key']}"}
     about_image_json = requests.get(data_gathering_url, params=payload).json()
     for i in range(len(about_image_json)):
         date_image = datetime.fromisoformat(
