@@ -3,8 +3,6 @@ import spacex_nasa_api
 import os
 import argparse
 from datetime import datetime
-from io import BytesIO
-from PIL import Image
 
 
 def main():
