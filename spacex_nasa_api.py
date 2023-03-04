@@ -5,6 +5,7 @@ from pathlib import Path
 from io import BytesIO
 from PIL import Image
 
+# Create a commit "Make the functions suitable for telegram bot as well"  In the end привести к единому виду все файлы, причесав код
 
 def get_filename_extension(image_url):
     root, extension = os.path.splitext(urlparse(unquote(image_url)).path)
@@ -14,7 +15,12 @@ def get_filename_extension(image_url):
 
 def get_api_key():
     load_dotenv(find_dotenv())
-    return os.environ["NASA_API_KEY"]
+    api_keys = {
+        'nasa_api_key': os.environ['NASA_API_KEY'],
+        'tg_api_key': os.environ['TG_TOKEN'],
+        'chat_id': os.environ['CHAT_ID']
+        }
+    return api_keys
 
 
 def check_create_path(path_to_save):
