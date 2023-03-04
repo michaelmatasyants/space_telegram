@@ -6,7 +6,6 @@ from io import BytesIO
 from PIL import Image
 import telegram
 
-# Create a commit "Make the functions suitable for telegram bot as well"  In the end привести к единому виду все файлы, причесав код
 
 def get_filename_extension(image_url):
     root, extension = os.path.splitext(urlparse(unquote(image_url)).path)
