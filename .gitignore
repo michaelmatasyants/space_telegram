@@ -162,5 +162,4 @@ cython_debug/
 # Other files
 bad.py
 images/
-nasa_apod/
-nasa_epic/
+
