@@ -28,8 +28,8 @@ def main():
         if links_launch_images:
             for id, url in enumerate(links_launch_images):
                 response_image = requests.get(url)
-                new_image = Image.open(BytesIO(response_image.content))
-                new_image.save(f"{args.path}/{id}.spacex_{args.id}.jpg")
+                with Image.open(BytesIO(response_image.content)) as new_image:
+                    new_image.save(f"{args.path}/{id}.spacex_{args.id}.jpg")
         else:
             print(f"No pictures from {args.id} launch.")
     except requests.exceptions.HTTPError:

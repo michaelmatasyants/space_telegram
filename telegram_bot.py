@@ -10,5 +10,6 @@ def publish_message(text):
 
 def publish_image_as_file(photo_path):
     bot = telegram.Bot(token=spacex_nasa_api.get_api_key()['tg_api_key'])
-    bot.send_document(chat_id=spacex_nasa_api.get_api_key()['chat_id'],
-                      document=open(photo_path, 'rb'))
+    with open(photo_path, 'rb') as new_image:
+        bot.send_document(chat_id=spacex_nasa_api.get_api_key()['chat_id'],
+                          document=new_image)

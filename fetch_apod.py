@@ -51,18 +51,16 @@ def main():
         for image_link in links_apod:
             filename, extension = get_filename_extension(image_link)
             image_response = requests.get(image_link)
-            Image.open(BytesIO(image_response.content)).save(
-                f"{args.path}/{filename}{extension}"
-                )
+            with Image.open(BytesIO(image_response.content)) as new_image:
+                new_image.save(f'{args.path}/{filename}{extension}')
             print(f'File {filename}{extension} has been succesfully',
                   f'downloaded to {args.path}')
     else:
         image_link = apod_response.json()["hdurl"]
         filename, extension = get_filename_extension(image_link)
         image_response = requests.get(image_link)
-        Image.open(BytesIO(image_response.content)).save(
-            f"{args.path}/{filename}{extension}"
-            )
+        with Image.open(BytesIO(image_response.content)) as new_image:
+            new_image.save(f'{args.path}/{filename}{extension}')
         print(f'File "{filename}{extension}" has been successfully',
               f'downloaded to {args.path}')
 

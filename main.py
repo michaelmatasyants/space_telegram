@@ -24,12 +24,12 @@ def fetch_spacex_launch(path_to_save, id='latest'):
         response = requests.get(f"https://api.spacexdata.com/v5/launches/{id}")
         response.raise_for_status()
         links_flight_images = response.json()["links"]["flickr"]["original"]
-        
+
         if links_flight_images:
             for id, url in enumerate(links_flight_images):
                 response_image = requests.get(url)
-                new_image = Image.open(BytesIO(response_image.content))
-                new_image.save(f"{path_to_save}/spacex_{id}.jpg")
+                with Image.open(BytesIO(response_image.content)) as new_image:
+                    new_image.save(f"{path_to_save}/spacex_{id}.jpg")
         else:
             print(f"No pictures from {id} flight.")
     except requests.exceptions.HTTPError:
@@ -64,17 +64,15 @@ def download_apod(path_to_save, date="", start_date="", end_date=""):
         for link in links_apod:
             filename, extension = get_filename_and_extension(link)
             image_response = requests.get(link).content
-            Image.open(BytesIO(image_response)).save(
-                f"{path_to_save}/{filename}{extension}"
-                )
+            with Image.open(BytesIO(image_response)) as new_image:
+                new_image.save(f"{path_to_save}/{filename}{extension}")
             print(requests.get(link).url)
     else:  # Download only 1 APOD by date
         image_link = apod_response.json()["hdurl"]
         filename, extension = get_filename_and_extension(image_link)
         image_response = requests.get(image_link).content
-        Image.open(BytesIO(image_response)).save(
-            f"{path_to_save}/{filename}{extension}"
-            )
+        with Image.open(BytesIO(image_response)) as new_image:
+            new_image.save(f"{path_to_save}/{filename}{extension}")
     print("All images have been downloaded!\n")
 
 
@@ -96,11 +94,10 @@ def download_epic(path_to_save, extension="png"):
             ).strftime("%Y/%m/%d")
         name_image = f"{about_image_response[id]['image']}.{extension}"
 
-        image_url = f"https://api.nasa.gov/EPIC/archive/natural/{date_image}/{extension}/{name_image}"
+        image_url = "https://api.nasa.gov/EPIC/archive/natural/{date_image}/{extension}/{name_image}"
         image_response = requests.get(image_url, params=payload)
-        Image.open(BytesIO(image_response.content)).save(
-            f"{path_to_save}/{name_image}"
-            )
+        with Image.open(BytesIO(image_response.content)) as new_image:
+            new_image.save(f"{path_to_save}/{name_image}")
     print("All images have been downloaded!")
 
 
