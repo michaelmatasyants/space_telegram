@@ -29,12 +29,12 @@ def main():
 
     for photo_path in paths_to_publish_photos:
         spacex_nasa_api.publish_image_as_file(photo_path)
-        time.sleep(args.frequency)
+        time.sleep(args.frequency * 3600)
     while args.endless:
         shuffle(paths_to_publish_photos)
         for photo_path in paths_to_publish_photos:
             spacex_nasa_api.publish_image_as_file(photo_path)
-            time.sleep(args.frequency)
+            time.sleep(args.frequency * 3600)
 
 
 if __name__ == "__main__":
