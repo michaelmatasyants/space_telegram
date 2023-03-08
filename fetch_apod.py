@@ -54,8 +54,8 @@ def main():
             Image.open(BytesIO(image_response.content)).save(
                 f"{args.path}/{filename}{extension}"
                 )
-            print(f'''File {filename}{extension} has been succesfully
-                      downloaded''')
+            print(f'File {filename}{extension} has been succesfully',
+                  f'downloaded to {args.path}')
     else:
         image_link = apod_response.json()["hdurl"]
         filename, extension = get_filename_extension(image_link)
@@ -63,7 +63,8 @@ def main():
         Image.open(BytesIO(image_response.content)).save(
             f"{args.path}/{filename}{extension}"
             )
-        print(f'File "{filename}{extension}" has been successfully downloaded')
+        print(f'File "{filename}{extension}" has been successfully',
+              f'downloaded to {args.path}')
 
 
 if __name__ == "__main__":
