@@ -30,6 +30,8 @@ def check_create_path(path_to_save):
 def save_image(bytes_image, path_to_save, image_name="image.png"):
     with Image.open(BytesIO(bytes_image)) as new_image:
         new_image.save(Path(path_to_save, image_name))
+    print(f'File {image_name} has been succesfully downloaded to',
+          path_to_save)
 
 
 def publish_message(text):

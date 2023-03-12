@@ -8,6 +8,13 @@ import spacex_nasa_api
 from pathlib import Path
 
 
+def download_apod(image_link, path_to_save):
+    filename, extension = spacex_nasa_api.get_filename_extension(image_link)
+    image_response = requests.get(image_link)
+    spacex_nasa_api.save_image(image_response.content, path_to_save,
+                               f'{filename}{extension}')
+
+
 def main():
     nasa_api_key = spacex_nasa_api.get_api_key()['nasa_api_key']
     image_parser = argparse.ArgumentParser(
@@ -39,34 +46,19 @@ def main():
             "api_key": f"{nasa_api_key}",
             "date": f"{args.date}"
         }
+        apod_response = requests.get(url, params=payload)
+        image_link = apod_response.json()["hdurl"]
+        download_apod(image_link, Path(args.path))
     else:
         payload = {
             "api_key": f"{nasa_api_key}",
             "start_date": f"{args.start_date}",
             "end_date": f"{args.end_date}"
         }
-    apod_response = requests.get(url, params=payload)
-    if args.start_date and args.end_date:
+        apod_response = requests.get(url, params=payload)
         links_apod = [i["hdurl"] for i in apod_response.json()]
         for image_link in links_apod:
-            filename, extension = spacex_nasa_api.get_filename_extension(
-                image_link
-                )
-            image_response = requests.get(image_link)
-            with Image.open(BytesIO(image_response.content)) as new_image:
-                new_image.save(Path(args.path, f'{filename}{extension}'))
-            print(f'File {filename}{extension} has been succesfully',
-                  f'downloaded to {Path(args.path)}')
-    else:
-        image_link = apod_response.json()["hdurl"]
-        filename, extension = spacex_nasa_api.get_filename_extension(
-            image_link
-            )
-        image_response = requests.get(image_link)
-        with Image.open(BytesIO(image_response.content)) as new_image:
-            new_image.save(Path(args.path, f'{filename}{extension}'))
-        print(f'File "{filename}{extension}" has been successfully',
-              f'downloaded to {Path(args.path)}')
+            download_apod(image_link, Path(args.path))
 
 
 if __name__ == "__main__":

@@ -34,9 +34,6 @@ def main():
         image_response = requests.get(image_url, params=payload)
         spacex_nasa_api.save_image(image_response.content,
                                    Path(args.path), name_image)
-        print("{} has been successfully downloaded to {}".format(
-            name_image, Path(args.path))
-            )
 
 
 if __name__ == "__main__":

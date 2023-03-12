@@ -4,6 +4,14 @@ from io import BytesIO
 from pathlib import Path
 import argparse
 import os
+from spacex_nasa_api import save_image
+
+
+def get_links_to_photos(launch_id):
+    url = "https://api.spacexdata.com/v5/launches"
+    response = requests.get(f'{url}/{launch_id}')
+    response.raise_for_status()
+    return response.json()["links"]["flickr"]["original"]
 
 
 def main():
@@ -20,17 +28,12 @@ def main():
     args = image_parser.parse_args()
     Path(args.path).mkdir(parents=True, exist_ok=True)
     try:
-        response = requests.get(
-            f"https://api.spacexdata.com/v5/launches/{args.id}"
-            )
-        response.raise_for_status()
-        links_launch_images = response.json()["links"]["flickr"]["original"]
+        links_launch_images = get_links_to_photos(args.id)
         if links_launch_images:
             for id, url in enumerate(links_launch_images):
                 response_image = requests.get(url)
-                with Image.open(BytesIO(response_image.content)) as new_image:
-                    new_image.save(Path(args.path,
-                                        f'{id}.spacex_{args.id}.jpg'))
+                save_image(response_image.content, Path(args.path),
+                           f'{id}_spacex_{args.id}.jpg')
         else:
             print(f"No pictures from {args.id} launch.")
     except requests.exceptions.HTTPError:
