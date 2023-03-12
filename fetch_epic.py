@@ -3,6 +3,7 @@ import spacex_nasa_api
 import os
 import argparse
 from datetime import datetime
+from pathlib import Path
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     image_parser.add_argument("-x", "--extension", default='png',
                               help="enter extension for the image png or jpg")
     args = image_parser.parse_args()
-    spacex_nasa_api.check_create_path(args.path)
+    spacex_nasa_api.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/EPIC"
     data_gathering_url = f"{url}/api/natural"
     payload = {"api_key": f"{spacex_nasa_api.get_api_key()['nasa_api_key']}"}
@@ -32,9 +33,10 @@ def main():
             url, date_image, args.extension, name_image)
         image_response = requests.get(image_url, params=payload)
         spacex_nasa_api.save_image(image_response.content,
-                                   args.path, name_image)
-        print("{} has been successfully downloaded to {}".format(name_image,
-                                                                 args.path))
+                                   Path(args.path), name_image)
+        print("{} has been successfully downloaded to {}".format(
+            name_image, Path(args.path))
+            )
 
 
 if __name__ == "__main__":

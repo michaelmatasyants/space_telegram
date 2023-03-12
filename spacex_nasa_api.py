@@ -29,7 +29,7 @@ def check_create_path(path_to_save):
 
 def save_image(bytes_image, path_to_save, image_name="image.png"):
     with Image.open(BytesIO(bytes_image)) as new_image:
-        new_image.save(f"{path_to_save}/{image_name}")
+        new_image.save(Path(path_to_save, image_name))
 
 
 def publish_message(text):

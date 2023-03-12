@@ -29,7 +29,8 @@ def main():
             for id, url in enumerate(links_launch_images):
                 response_image = requests.get(url)
                 with Image.open(BytesIO(response_image.content)) as new_image:
-                    new_image.save(f"{args.path}/{id}.spacex_{args.id}.jpg")
+                    new_image.save(Path(args.path,
+                                        f'{id}.spacex_{args.id}.jpg'))
         else:
             print(f"No pictures from {args.id} launch.")
     except requests.exceptions.HTTPError:

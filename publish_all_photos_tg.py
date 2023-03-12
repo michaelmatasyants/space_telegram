@@ -3,6 +3,7 @@ import spacex_nasa_api
 import time
 import os
 from random import shuffle
+from pathlib import Path
 
 
 def main():
@@ -22,10 +23,10 @@ def main():
                         help='start endless publishing')
     args = parser.parse_args()
     paths_to_publish_photos = []
-    for root, dirs, files in os.walk(args.photo_path):
+    for root, dirs, files in os.walk(Path(args.photo_path)):
         for file in files:
             if file.endswith(('.jpg', '.jpeg', '.png')):
-                paths_to_publish_photos.append(f'{root}/{file}')
+                paths_to_publish_photos.append(Path(root, file))
 
     for photo_path in paths_to_publish_photos:
         spacex_nasa_api.publish_image_as_file(photo_path)
