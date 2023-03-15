@@ -1,6 +1,4 @@
 import requests
-from PIL import Image
-from io import BytesIO
 from pathlib import Path
 import argparse
 import os
@@ -30,10 +28,21 @@ def main():
     try:
         links_launch_images = get_links_to_photos(args.id)
         if links_launch_images:
+            image_quantity = len(links_launch_images)
             for id, url in enumerate(links_launch_images):
-                response_image = requests.get(url)
-                save_image(response_image.content, Path(args.path),
-                           f'{id}_spacex_{args.id}.jpg')
+                try:
+                    response_image = requests.get(url)
+                    response_image.raise_for_status()
+                    save_image(response_image.content, Path(args.path),
+                               f'{id}_spacex_{args.id}.jpg')
+                except requests.exceptions.HTTPError:
+                    image_quantity -= 1
+                    if not image_quantity:
+                        print(f"All links to images from {args.id} launch",
+                              "are invalid. Try to download images of another",
+                              "launch.")
+                    else:
+                        continue
         else:
             print(f"No pictures from {args.id} launch.")
     except requests.exceptions.HTTPError:

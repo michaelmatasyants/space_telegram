@@ -1,9 +1,7 @@
 import requests
 import argparse
 import os
-from datetime import date
-from PIL import Image
-from io import BytesIO
+from datetime import date, datetime
 import spacex_nasa_api
 from pathlib import Path
 
@@ -46,19 +44,29 @@ def main():
             "api_key": f"{nasa_api_key}",
             "date": f"{args.date}"
         }
-        apod_response = requests.get(url, params=payload)
-        image_link = apod_response.json()["hdurl"]
-        download_apod(image_link, Path(args.path))
+        try:
+            apod_response = requests.get(url, params=payload)
+            apod_response.raise_for_status()
+            image_link = apod_response.json()["hdurl"]
+            download_apod(image_link, Path(args.path))
+        except requests.exceptions.HTTPError as http_err:
+            print("Please, make sure that the NASA_API_KEY you've entered is",
+                  f"correct.\n{http_err}")
     else:
         payload = {
             "api_key": f"{nasa_api_key}",
             "start_date": f"{args.start_date}",
             "end_date": f"{args.end_date}"
         }
-        apod_response = requests.get(url, params=payload)
-        links_apod = [i["hdurl"] for i in apod_response.json()]
-        for image_link in links_apod:
-            download_apod(image_link, Path(args.path))
+        try:
+            apod_response = requests.get(url, params=payload)
+            apod_response.raise_for_status()
+            links_apod = [i["hdurl"] for i in apod_response.json()]
+            for image_link in links_apod:
+                download_apod(image_link, Path(args.path))
+        except requests.exceptions.HTTPError as http_err:
+            print("Please, make sure that the NASA_API_KEY you've entered is",
+                  f"correct.\n{http_err}")
 
 
 if __name__ == "__main__":
