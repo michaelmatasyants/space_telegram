@@ -18,7 +18,7 @@ def get_api_key():
     api_keys = {
         'nasa_api_key': os.environ['NASA_API_KEY'],
         'tg_api_key': os.environ['TG_TOKEN'],
-        'chat_id': os.environ['CHAT_ID']
+        'tg_chat_id': os.environ['TG_CHAT_ID']
         }
     return api_keys
 
@@ -36,13 +36,14 @@ def save_image(bytes_image, path_to_save, image_name="image.png"):
 
 def publish_message(text):
     bot = telegram.Bot(token=get_api_key()['tg_api_key'])
-    bot.send_message(chat_id=get_api_key()['chat_id'], text=text)
+    bot.send_message(chat_id=get_api_key()['tg_chat_id'], text=text)
 
 
 def publish_image_as_file(photo_path):
     bot = telegram.Bot(token=get_api_key()['tg_api_key'])
     with open(photo_path, 'rb') as new_image:
-        bot.send_document(chat_id=get_api_key()['chat_id'], document=new_image)
+        bot.send_document(chat_id=get_api_key()['tg_chat_id'],
+                          document=new_image)
 
 
 def find_paths_to_images(path_to_search, count_of_images=1):
