@@ -15,6 +15,16 @@ def download_apod(image_link, path_to_save):
         )
 
 
+def is_date_format_correct(*dates):
+    for date in [*dates]:
+        if date is not None:
+            try:
+                datetime.strptime(date, "%Y-%m-%d")
+            except ValueError:
+                return False
+    return True
+
+
 def main():
     nasa_api_key = spacex_nasa_api.get_api_key()['nasa_api_key']
     image_parser = argparse.ArgumentParser(
@@ -36,6 +46,8 @@ def main():
                               help="""enter end_date for period to download
                                       a few APOD""")
     args = image_parser.parse_args()
+    if not is_date_format_correct(args.date, args.start_date, args.end_date):
+        return print("Please, make sure that the date format is correct.")
     spacex_nasa_api.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/planetary/apod"
 

@@ -2,7 +2,8 @@ import requests
 from pathlib import Path
 import argparse
 import os
-from spacex_nasa_api import save_image
+from spacex_nasa_api import save_image, check_create_path
+from spacex_nasa_api import get_filename_extension
 
 
 def get_links_to_photos(launch_id):
@@ -24,7 +25,7 @@ def main():
     image_parser.add_argument('-p', '--path', default=os.path.expanduser('~'),
                               help='enter path to save the image')
     args = image_parser.parse_args()
-    Path(args.path).mkdir(parents=True, exist_ok=True)
+    check_create_path(Path(args.path))
     try:
         links_launch_images = get_links_to_photos(args.id)
         if links_launch_images:
@@ -34,15 +35,15 @@ def main():
                     response_image = requests.get(url)
                     response_image.raise_for_status()
                     save_image(response_image.content, Path(args.path),
-                               f'{url_id}_spacex_{args.id}.jpg')
+                               '{}_{}'.format(
+                        url_id, "".join(get_filename_extension(url)))
+                        )
                 except requests.exceptions.HTTPError:
                     image_quantity -= 1
                     if not image_quantity:
                         print(f"All links to images from {args.id} launch",
                               "are invalid. Try to download images of another",
                               "launch.")
-                    else:
-                        continue
         else:
             print(f"No pictures from {args.id} launch.")
     except requests.exceptions.HTTPError:
