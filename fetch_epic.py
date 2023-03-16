@@ -25,19 +25,18 @@ def main():
     data_gathering_url = f"{url}/api/natural"
     payload = {"api_key": f"{spacex_nasa_api.get_api_key()['nasa_api_key']}"}
     try:
-        about_image = requests.get(data_gathering_url, params=payload)
-        about_image.raise_for_status()
-        about_image_json = about_image.json()
-        for i in range(len(about_image_json)):
+        about_all_images = requests.get(data_gathering_url, params=payload)
+        about_all_images.raise_for_status()
+        for about_image in about_all_images.json():
             date_image = datetime.fromisoformat(
-                about_image_json[i]['date']).strftime("%Y/%m/%d")
-            name_image = f"{about_image_json[i]['image']}.{args.extension}"
+                about_image['date']).strftime("%Y/%m/%d")
+            name_image = f"{about_image['image']}.{args.extension}"
             image_url = "{}/archive/natural/{}/{}/{}".format(
                 url, date_image, args.extension, name_image)
             image_response = requests.get(image_url, params=payload)
             image_response.raise_for_status()
             spacex_nasa_api.save_image(image_response.content,
-                                    Path(args.path), name_image)
+                                       Path(args.path), name_image)
     except requests.exceptions.HTTPError as http_err:
         print("Please, make sure that the NASA_API_KEY you've entered is",
               f"correct.\n{http_err}")
