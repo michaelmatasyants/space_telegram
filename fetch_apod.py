@@ -7,10 +7,12 @@ from pathlib import Path
 
 
 def download_apod(image_link, path_to_save):
-    filename, extension = spacex_nasa_api.get_filename_extension(image_link)
     image_response = requests.get(image_link)
-    spacex_nasa_api.save_image(image_response.content, path_to_save,
-                               f'{filename}{extension}')
+    image_response.raise_for_status()
+    spacex_nasa_api.save_image(
+        image_response.content, path_to_save,
+        ''.join(spacex_nasa_api.get_filename_extension(image_link))
+        )
 
 
 def main():

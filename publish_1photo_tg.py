@@ -5,13 +5,6 @@ import fetch_apod
 from pathlib import Path
 
 
-def find_image(path_to_search):
-    for root, dirs, files in os.walk(path_to_search):
-        for file in files:
-            if file.endswith(('.png', '.jpeg', '.jpg')):
-                return Path(root, file)
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="""The program publishes one picture from given directory
@@ -30,7 +23,8 @@ def main():
             )
     ):
         fetch_apod.main()
-        photo_to_publish = find_image(os.path.expanduser("~"))
+        photo_to_publish = spacex_nasa_api.find_paths_to_images(
+            os.path.expanduser("~"))
         spacex_nasa_api.publish_image_as_file(photo_to_publish)
         os.remove(photo_to_publish)
         print(f"The {photo_to_publish} file was published and deleted after")

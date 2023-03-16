@@ -43,3 +43,15 @@ def publish_image_as_file(photo_path):
     bot = telegram.Bot(token=get_api_key()['tg_api_key'])
     with open(photo_path, 'rb') as new_image:
         bot.send_document(chat_id=get_api_key()['chat_id'], document=new_image)
+
+
+def find_paths_to_images(path_to_search, count_of_images=1):
+    paths_to_images = []
+    for root, dirs, files in os.walk(path_to_search):
+        for file in files:
+            if file.endswith(('.png', '.jpeg', '.jpg')):
+                if count_of_images == 1:
+                    return Path(root, file)
+                else:
+                    paths_to_images.append(Path(root, file))
+    return paths_to_images
