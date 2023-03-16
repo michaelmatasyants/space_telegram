@@ -29,12 +29,12 @@ def main():
         links_launch_images = get_links_to_photos(args.id)
         if links_launch_images:
             image_quantity = len(links_launch_images)
-            for id, url in enumerate(links_launch_images):
+            for url_id, url in enumerate(links_launch_images):
                 try:
                     response_image = requests.get(url)
                     response_image.raise_for_status()
                     save_image(response_image.content, Path(args.path),
-                               f'{id}_spacex_{args.id}.jpg')
+                               f'{url_id}_spacex_{args.id}.jpg')
                 except requests.exceptions.HTTPError:
                     image_quantity -= 1
                     if not image_quantity:
