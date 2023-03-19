@@ -1,6 +1,5 @@
 import requests
 import spacex_nasa_api
-import os
 import argparse
 from datetime import datetime
 from pathlib import Path
@@ -8,14 +7,15 @@ from pathlib import Path
 
 def main():
     image_parser = argparse.ArgumentParser(
-        description='''Program downloads natural color imagery of Earth which
-                       was taken by NASA's Earth Polychromatic Imaging Camera
-                       (EPIC). If no extension of image and path to save are
-                       given they'll be chosen by default (extension = png,
-                       windows path = C:\\Users\\Michael\\Desktop,
-                       linux path = /home/user).'''
+        description='''Program downloads natural color images of The Earth
+                       taken by the NASA Earth Polychromatic Imaging Camera
+                       (EPIC). If you don't specify an image extension and
+                       save path, the program will download image(s) with "PNG"
+                       extension and place in the "images" folder located in
+                       the project directory. If such a folder doesn't exist,
+                       it'll be created automatically.'''
     )
-    image_parser.add_argument("-p", "--path", default=os.path.expanduser("~"),
+    image_parser.add_argument("-p", "--path", default=Path('images'),
                               help="enter path to save the image")
     image_parser.add_argument("-x", "--extension", default='png',
                               help="enter extension for the image png or jpg")

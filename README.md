@@ -36,6 +36,7 @@ You can also publish uploaded photos to your Telegram channel with the scripts `
 ### Examples of running scripts
 
 Before using each of the scripts `fetch_apod.py`, `fetch_epic.py`, `fetch_spacex_images.py`, `publish_1photo_tg.py` and `publish_all_photos_tg.py` it is recommended to run them with optional argument `-h` to read the description and explore the features of the programs.
+
 Run in your console:
 ```Console
 >>> python3 fetch_apod.py -h
@@ -45,9 +46,8 @@ Output:
 ```Console
 usage: fetch_apod.py [-h] [-p PATH] [-d DATE] [-s START_DATE] [-e END_DATE]
 
-Program downloads Astronomy Picture Of the Day (APOD). If no date (or start_date, end_date)
-and path are given, the program will download pictures for the curent day and place them on
-Windows desktop and in /home/user on Linux
+Program downloads Astronomy Picture Of the Day (APOD). If no date (or start_date, end_date) and path are given, the program will download pictures of the curent day and place picture(s) in the folder "images", located in the project
+directory. If such a folder doesn't exist, it'll be created automatically.
 
 options:
   -h, --help            show this help message and exit
@@ -60,65 +60,66 @@ options:
 ```
 Each of the scripts individually:
 
-1. The `fetch_apod.py` script downloads the picture(s) for the current day, specified day or period and places them in the given path.
+1. The `fetch_apod.py` script downloads the picture(s) for the current day, specified day or period and places them in the given path. If such a path doesn't exist, it'll be created automatically:
 
-Download the image for the current day and place it in the directory `path/to/save/images/`:
-```Console
->>> python3 fetch_apod.py -p path/to/save/images/
-```
+    Download picture for the current day and place it in the directory `path/to/save/images/`:
+    ```Console
+    >>> python3 fetch_apod.py -p path/to/save/images/
+    ```
 
-Download the picture for 2021/01/18 and put it in the `path/to/save/images/` directory:
-```Console
->>> python3 fetch_apod.py -d 2021-01-18 -p path/to/save/images/
-```
+    Download the picture for 2021/01/18 and put it in the `path/to/save/images/` directory:
+    ```Console
+    >>> python3 fetch_apod.py -d 2021-01-18 -p path/to/save/images/
+    ```
 
-Download photos taken from 2020/01/15 through 2020/01/18 and put them on your desktop for Windows or home/user/ for Linux:
-```Console
->>> python3 fetch_apod.py -s 2020-01-15 -e 2020-01-18
-```
+    Download photos taken from 2020/01/15 through 2020/01/18 and place them in the folder `images`, located in the project directory. Remember, if such a folder doesn't exist, it'll be created automatically:
+    ```Console
+    >>> python3 fetch_apod.py -s 2020-01-15 -e 2020-01-18
+    ```
 
-2. The `fetch_epic.py` script downloads natural color images of the Earth and puts them in a directory at the given path. You can also choose a '.png' or 'jpg' extension for the image, the default is '.png'.
+2. The `fetch_epic.py` script downloads natural color images of the Earth and puts them in a directory at the given path. If you don't specify an image extension and a path to save, the program will download image(s) with "PNG" extension and place them in the "images" folder located in the project directory. If such a folder doesn't exist, it'll be created automatically.
 
-Download the picture for current day and put it in the directory `path/to/save/images/`:
-```Console
->>> python3 fetch_epic.py -p path/to/save/images/
-```
-3. The `fetch_spacex_images.py` script downloads photos of the launch whose ID was passed or of the last SpaceX launch and puts them on the Windows desktop or in /home/user on Linux.
+    Download the picture for current day and put it in the directory `path/to/save/images/`:
+    ```Console
+    >>> python3 fetch_epic.py -p path/to/save/images/
+    ```
 
-Download images from the last launch and put it in the `path/to/save/images/` directory:
-```Console
->>> python3 fetch_spacex_images.py -p path/to/save/images/
-```
+3. The `fetch_spacex_images.py` script downloads pictures of SpaceX launches. If no launch_id and path are given, the program will download photo(s) from the last launch and place them in the folder "images", located in the project directory. If such a folder doesn't exist, it'll be created automatically.
 
-Download pictures from the launch ID `5eb87d42ffd86e000604b384` and place it in the `path/to/save/images/` directory:
-```Console
->>> python3 fetch_spacex_images.py -i 5eb87d42ffd86e000604b384 -p path/to/save/images/
-```
+    Download images from the last launch and put it in the `path/to/save/images/` directory:
+    ```Console
+    >>> python3 fetch_spacex_images.py -p path/to/save/images/
+    ```
+
+    Download pictures from the launch_id `5eb87d42ffd86e000604b384` and place them in the `path/to/save/images/` directory:
+    ```Console
+    >>> python3 fetch_spacex_images.py -i 5eb87d42ffd86e000604b384 -p path/to/save/images/
+    ```
 
 4. The `publish_1photo_tg.py` script publishes one photo from the specified directory path. If the path isn't given, the program will download APOD for the current day and publish it. After publishing, the picture will be deleted from the PC.
 
-Post the photo to the Telegram channel by specifying the photo path `enter/the/path/to/the/photo.png` (сhat_id of the channel must be set in the `.env` file.):
+    Post the photo to the Telegram channel by specifying the photo path `enter/the/path/to/the/photo.png` (сhat_id of the channel must be set in the `.env` file.):
 
-```Console
->>> python3 publish_1photo_tg.py -p enter/the/path/to/the/photo.png
-```
+    ```Console
+    >>> python3 publish_1photo_tg.py -p enter/the/path/to/the/photo.png
+    ```
 
-Post photo APOD for current day in the Telegram channel (tg_chat_id of the channel must be set in the `.env` file.):
-```Console
->>> python3 publish_1photo_tg.py
-```
+    Post photo APOD for current day in the Telegram channel (tg_chat_id of the channel must be set in the `.env` file.):
+    ```Console
+    >>> python3 publish_1photo_tg.py
+    ```
 
 5. The `publish_all_photos_tg.py` script publishes all photos from a given directory path at a fixed interval, every 4 hours (by default). You can also loop publish photos from directory and subdirectories. After first publishing of all images, they will be shuffled to publish them in a different order.
 
-Post all the photos located in the `enter/the/path/to/the/images` directory and set frequency of publication as every 6 hours:
-```Console
->>> python3 publish_all_photos_tg.py enter/the/path/to/the/images -f 6
-```
+    Post all the photos located in the `enter/the/path/to/the/images` directory and set frequency of publication as every 6 hours:
+    ```Console
+    >>> python3 publish_all_photos_tg.py enter/the/path/to/the/images -f 6
+    ```
 
-Post all the photos located in the `enter/the/path/to/the/images` directory and subdirectories. Loop publish photos until the script wouldn't be soped.
-```Console
->>> python3 publish_all_photos_tg.py enter/the/path/to/the/images -e
-```
+    Post all the photos located in the `enter/the/path/to/the/images` directory and subdirectories. Loop publish photos until the script wouldn't be soped.
+    ```Console
+    >>> python3 publish_all_photos_tg.py enter/the/path/to/the/images -e
+    ```
 
 ### Project Goals
 The code is written for educational purposes.

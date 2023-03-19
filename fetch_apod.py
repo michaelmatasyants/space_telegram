@@ -1,6 +1,5 @@
 import requests
 import argparse
-import os
 from datetime import date, datetime
 import spacex_nasa_api
 from pathlib import Path
@@ -30,11 +29,12 @@ def main():
     image_parser = argparse.ArgumentParser(
         description='''Program downloads Astronomy Picture Of the Day (APOD).
                        If no date (or start_date, end_date) and path are given,
-                       the program will download pictures for the curent day
-                       and place them on Windows desktop and in /home/user on
-                       Linux'''
+                       the program will download pictures of the curent day
+                       and place picture(s) in the folder "images", located in the
+                       project directory. If such a folder doesn't exist, it'll
+                       be created automatically.'''
     )
-    image_parser.add_argument("-p", "--path", default=os.path.expanduser("~"),
+    image_parser.add_argument("-p", "--path", default=Path('images'),
                               help="enter path to save the image")
     image_parser.add_argument("-d", "--date",
                               help='''enter date (YYYY-MM-DD) to download

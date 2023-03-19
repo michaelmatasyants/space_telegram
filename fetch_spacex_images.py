@@ -1,7 +1,6 @@
 import requests
 from pathlib import Path
 import argparse
-import os
 from spacex_nasa_api import save_image, check_create_path
 from spacex_nasa_api import get_filename_extension
 
@@ -16,18 +15,20 @@ def get_links_to_photos(launch_id):
 def main():
     image_parser = argparse.ArgumentParser(
         description='''Program downloads pictures of SpaceX launches.
-                    If no 'ID' and 'Path' are given, the program will
-                    download pictures from the last launch and place them
-                    on Windows desktop and in /home/user on Linux'''
+                    If no launch_id and path are given, the program will
+                    download photo(s) from the last launch and place them
+                    in the folder "images", located in the project directory.
+                    If such a folder doesn't exist, it'll be created
+                    automatically.'''
     )
-    image_parser.add_argument('-i', '--id', default='latest', type=str,
-                              help='enter the launch ID to download images.')
-    image_parser.add_argument('-p', '--path', default=os.path.expanduser('~'),
+    image_parser.add_argument('-l', '--launch_id', default='latest', type=str,
+                              help='enter the launch id to download images.')
+    image_parser.add_argument('-p', '--path', default=Path('images'),
                               help='enter path to save the image')
     args = image_parser.parse_args()
     check_create_path(Path(args.path))
     try:
-        links_launch_images = get_links_to_photos(args.id)
+        links_launch_images = get_links_to_photos(args.launch_id)
         if links_launch_images:
             image_quantity = len(links_launch_images)
             for url_id, url in enumerate(links_launch_images):
@@ -41,13 +42,13 @@ def main():
                 except requests.exceptions.HTTPError:
                     image_quantity -= 1
                     if not image_quantity:
-                        print(f"All links to images from {args.id} launch",
+                        print(f"All links to images from {args.launch_id} launch",
                               "are invalid. Try to download images of another",
                               "launch.")
         else:
-            print(f"No pictures from {args.id} launch.")
+            print(f"No pictures from {args.launch_id} launch.")
     except requests.exceptions.HTTPError:
-        print('''You've entered incorrect "id".''')
+        print('''You've entered incorrect "launch_id".''')
 
 
 if __name__ == "__main__":
