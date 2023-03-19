@@ -3,6 +3,8 @@ import argparse
 from datetime import date, datetime
 import spacex_nasa_api
 from pathlib import Path
+from dotenv import find_dotenv, load_dotenv
+import os
 
 
 def download_apod(image_link, path_to_save):
@@ -25,7 +27,8 @@ def is_date_format_correct(*dates):
 
 
 def main():
-    nasa_api_key = spacex_nasa_api.get_api_key()['nasa_api_key']
+    load_dotenv(find_dotenv())
+    nasa_api_key = os.environ["NASA_API_KEY"]
     image_parser = argparse.ArgumentParser(
         description='''Program downloads Astronomy Picture Of the Day (APOD).
                        If no date (or start_date, end_date) and path are given,

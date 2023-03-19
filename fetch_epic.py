@@ -3,9 +3,13 @@ import spacex_nasa_api
 import argparse
 from datetime import datetime
 from pathlib import Path
+from dotenv import find_dotenv, load_dotenv
+import os
 
 
 def main():
+    load_dotenv(find_dotenv())
+
     image_parser = argparse.ArgumentParser(
         description='''Program downloads natural color images of The Earth
                        taken by the NASA Earth Polychromatic Imaging Camera
@@ -23,7 +27,7 @@ def main():
     spacex_nasa_api.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/EPIC"
     data_gathering_url = f"{url}/api/natural"
-    payload = {"api_key": f"{spacex_nasa_api.get_api_key()['nasa_api_key']}"}
+    payload = {"api_key": f"{os.environ['NASA_API_KEY']}"}
     try:
         about_all_images = requests.get(data_gathering_url, params=payload)
         about_all_images.raise_for_status()

@@ -28,7 +28,7 @@ You can also publish uploaded photos to your Telegram channel with the scripts `
 5. Create an `.env` file and locate it in the same directory where your project is. Copy and append your access token to `.env` file like this:
     ```
     NASA_API_KEY=paste_here_your_token_from_step_4.1
-    TG_TOKEN=paste_here_your_bot_token_from_step_4.2
+    TG_BOT_TOKEN=paste_here_your_bot_token_from_step_4.2
     TG_CHAT_ID=paste_here_your_chanel_name_from_step_4.3
     ```
 6. Remember to add `.env` to your `.gitignore` if you are going to put the project on GIT.
