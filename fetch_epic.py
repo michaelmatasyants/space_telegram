@@ -7,6 +7,22 @@ from dotenv import find_dotenv, load_dotenv
 import os
 
 
+def downlaod_epic_images(url, payload, extension, path_to_save):
+    about_all_images = requests.get(f"{url}/api/natural", params=payload)
+    about_all_images.raise_for_status()
+    for about_image in about_all_images.json():
+        date_image = datetime.fromisoformat(
+            about_image['date']).strftime("%Y/%m/%d")
+        name_image = f"{about_image['image']}.{extension}"
+        image_url = "{}/archive/natural/{}/{}/{}".format(
+            url, date_image, extension, name_image)
+        image_response = requests.get(image_url, params=payload)
+        image_response.raise_for_status()
+        spacex_nasa_api.save_image(image_response.content,
+                                   Path(path_to_save),
+                                   name_image)
+
+
 def main():
     load_dotenv(find_dotenv())
 
@@ -26,24 +42,12 @@ def main():
     args = image_parser.parse_args()
     spacex_nasa_api.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/EPIC"
-    data_gathering_url = f"{url}/api/natural"
     payload = {"api_key": f"{os.environ['NASA_API_KEY']}"}
     try:
-        about_all_images = requests.get(data_gathering_url, params=payload)
-        about_all_images.raise_for_status()
-        for about_image in about_all_images.json():
-            date_image = datetime.fromisoformat(
-                about_image['date']).strftime("%Y/%m/%d")
-            name_image = f"{about_image['image']}.{args.extension}"
-            image_url = "{}/archive/natural/{}/{}/{}".format(
-                url, date_image, args.extension, name_image)
-            image_response = requests.get(image_url, params=payload)
-            image_response.raise_for_status()
-            spacex_nasa_api.save_image(image_response.content,
-                                       Path(args.path), name_image)
+        downlaod_epic_images(url, payload, args.extension, args.path)
     except requests.exceptions.HTTPError as http_err:
-        print("Please, make sure that the NASA_API_KEY you've entered is",
-              f"correct.\n{http_err}")
+        return print("Please, make sure that the NASA_API_KEY you've entered",
+                     f"is correct.\n{http_err}")
 
 
 if __name__ == "__main__":

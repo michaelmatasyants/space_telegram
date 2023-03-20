@@ -27,28 +27,30 @@ def main():
                               help='enter path to save the image')
     args = image_parser.parse_args()
     check_create_path(Path(args.path))
+
     try:
         links_launch_images = get_links_to_photos(args.launch_id)
-        if links_launch_images:
-            image_quantity = len(links_launch_images)
-            for url_id, url in enumerate(links_launch_images):
-                try:
-                    response_image = requests.get(url)
-                    response_image.raise_for_status()
-                    save_image(response_image.content, Path(args.path),
-                               '{}_{}'.format(
-                        url_id, "".join(get_filename_extension(url)))
-                        )
-                except requests.exceptions.HTTPError:
-                    image_quantity -= 1
-                    if not image_quantity:
-                        print(f"All links to images from {args.launch_id} launch",
-                              "are invalid. Try to download images of another",
-                              "launch.")
-        else:
-            print(f"No pictures from {args.launch_id} launch.")
     except requests.exceptions.HTTPError:
         print('''You've entered incorrect "launch_id".''')
+    if links_launch_images:
+        image_quantity = len(links_launch_images)
+        for url_id, url in enumerate(links_launch_images):
+            flag = True
+            try:
+                response_image = requests.get(url)
+                response_image.raise_for_status()
+            except requests.exceptions.HTTPError:
+                flag = False
+                image_quantity -= 1
+            if flag:
+                save_image(response_image.content, Path(args.path),
+                           '{}_{}'.format(
+                    url_id, "".join(get_filename_extension(url))))
+            elif not image_quantity:
+                print(f"All links to images from {args.launch_id} launch",
+                      "are invalid. Try to download images of another launch.")
+    else:
+        print(f"No pictures from {args.launch_id} launch.")
 
 
 if __name__ == "__main__":
