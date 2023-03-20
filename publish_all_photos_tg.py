@@ -3,6 +3,7 @@ import spacex_nasa_api
 import time
 from random import shuffle
 from pathlib import Path
+import telegram
 
 
 def main():
@@ -23,15 +24,23 @@ def main():
     args = parser.parse_args()
     paths_to_publish_photos = spacex_nasa_api.find_paths_to_images(
         Path(args.photo_path), count_of_images="all")
-    for photo_path in paths_to_publish_photos:
-        spacex_nasa_api.publish_image_as_file(photo_path)
-        time.sleep(args.frequency * 3600)
-    while args.endless:
-        shuffle(paths_to_publish_photos)
+    time_to_sleep = args.frequency * 3600
+    if args.endless:
+        first_network_error = True
+        while True:
+            for photo_path in paths_to_publish_photos:
+                try:
+                    spacex_nasa_api.publish_image_as_file(photo_path)
+                except telegram.error.NetworkError:
+                    if first_network_error:
+                        first_network_error, time_to_sleep = False, 5
+                finally:
+                    time.sleep(time_to_sleep)
+            shuffle(paths_to_publish_photos)
+    else:
         for photo_path in paths_to_publish_photos:
             spacex_nasa_api.publish_image_as_file(photo_path)
-            time.sleep(args.frequency * 3600)
-
+            time.sleep(time_to_sleep)
 
 if __name__ == "__main__":
     main()
