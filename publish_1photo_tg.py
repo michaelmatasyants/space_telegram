@@ -1,5 +1,5 @@
 import argparse
-import spacex_nasa_api
+import api_tools
 import os
 import fetch_apod
 from pathlib import Path
@@ -22,13 +22,12 @@ def main():
             '.png', '.jpeg', '.jpg'
             )):
         fetch_apod.main()
-        photo_to_publish = spacex_nasa_api.find_paths_to_images(
-            args.photo_path)
-        spacex_nasa_api.publish_image_as_file(photo_to_publish)
+        photo_to_publish = api_tools.find_paths_to_images(args.photo_path)
+        api_tools.publish_image_as_file(photo_to_publish)
         os.remove(photo_to_publish)
         print(f"The {photo_to_publish} file was published and deleted after")
     else:
-        spacex_nasa_api.publish_image_as_file(Path(args.photo_path))
+        api_tools.publish_image_as_file(Path(args.photo_path))
 
 
 if __name__ == "__main__":

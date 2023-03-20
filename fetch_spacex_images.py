@@ -1,8 +1,7 @@
 import requests
 from pathlib import Path
 import argparse
-from spacex_nasa_api import save_image, check_create_path
-from spacex_nasa_api import get_filename_extension
+from api_tools import save_image, check_create_path, get_filename_extension
 
 
 def get_links_to_photos(launch_id):

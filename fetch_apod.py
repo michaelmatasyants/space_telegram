@@ -1,7 +1,7 @@
 import requests
 import argparse
 from datetime import date, datetime
-import spacex_nasa_api
+import api_tools
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import os
@@ -10,10 +10,8 @@ import os
 def download_apod(image_link, path_to_save):
     image_response = requests.get(image_link)
     image_response.raise_for_status()
-    spacex_nasa_api.save_image(
-        image_response.content, path_to_save,
-        ''.join(spacex_nasa_api.get_filename_extension(image_link))
-        )
+    api_tools.save_image(image_response.content, path_to_save,
+                         ''.join(api_tools.get_filename_extension(image_link)))
 
 
 def is_date_format_correct(*dates):
@@ -33,9 +31,9 @@ def main():
         description='''Program downloads Astronomy Picture Of the Day (APOD).
                        If no date (or start_date, end_date) and path are given,
                        the program will download pictures of the curent day
-                       and place picture(s) in the folder "images", located in the
-                       project directory. If such a folder doesn't exist, it'll
-                       be created automatically.'''
+                       and place picture(s) in the folder "images", located in
+                       the project directory. If such a folder doesn't exist,
+                       it'll be created automatically.'''
     )
     image_parser.add_argument("-p", "--path", default=Path('images'),
                               help="enter path to save the image")
@@ -51,7 +49,7 @@ def main():
     args = image_parser.parse_args()
     if not is_date_format_correct(args.date, args.start_date, args.end_date):
         return print("Please, make sure that the date format is correct.")
-    spacex_nasa_api.check_create_path(Path(args.path))
+    api_tools.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/planetary/apod"
 
     if args.start_date is None and args.end_date is None:
