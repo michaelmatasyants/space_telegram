@@ -62,11 +62,18 @@ def main():
         try:
             apod_response = requests.get(url, params=payload)
             apod_response.raise_for_status()
-            image_link = apod_response.json()["hdurl"]
-            download_apod(image_link, Path(args.path))
         except requests.exceptions.HTTPError as http_err:
-            print("Please, make sure that the NASA_API_KEY you've entered is",
-                  f"correct.\n{http_err}")
+            return print("Please, make sure that the NASA_API_KEY you've",
+                         f"entered is correct.\n{http_err}")
+        if apod_response.json()['media_type'] == 'image':
+            try:
+                image_link = apod_response.json()["hdurl"]
+            # The next day's photo isn't immediately available
+            # when that day occurs.
+            except KeyError:
+                return print(f"There is no picture for {args.date}.",
+                             "Please try to enter any another date.")
+            download_apod(image_link, Path(args.path))
     else:
         payload = {
             "api_key": f"{nasa_api_key}",
@@ -76,12 +83,18 @@ def main():
         try:
             apod_response = requests.get(url, params=payload)
             apod_response.raise_for_status()
-            links_apod = [i["hdurl"] for i in apod_response.json()]
-            for image_link in links_apod:
-                download_apod(image_link, Path(args.path))
         except requests.exceptions.HTTPError as http_err:
-            print("Please, make sure that the NASA_API_KEY you've entered is",
-                  f"correct.\n{http_err}")
+            return print("Please, make sure that the NASA_API_KEY you've",
+                         f"entered is correct.\n{http_err}")
+        links_apod = []
+        for response in apod_response.json():
+            if response['media_type'] == 'image':
+                try:
+                    links_apod.append(response["hdurl"])
+                except KeyError:
+                    print(f"There is no picture for {args.date}.")
+        for image_link in links_apod:
+            download_apod(image_link, Path(args.path))
 
 
 if __name__ == "__main__":
