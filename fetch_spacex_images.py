@@ -33,18 +33,19 @@ def main():
         print('''You've entered incorrect "launch_id".''')
     if links_launch_images:
         image_quantity = len(links_launch_images)
-        for url_id, url in enumerate(links_launch_images):
-            flag = True
+        for link in links_launch_images:
+            link_is_valid = True
             try:
-                response_image = requests.get(url)
+                response_image = requests.get(link)
                 response_image.raise_for_status()
             except requests.exceptions.HTTPError:
-                flag = False
+                link_is_valid = False
                 image_quantity -= 1
-            if flag:
+            if link_is_valid:
                 save_image(response_image.content, Path(args.path),
                            '{}_{}'.format(
-                    url_id, "".join(get_filename_extension(url))))
+                    args.launch_id, "".join(get_filename_extension(link)))
+                    )
             elif not image_quantity:
                 print(f"All links to images from {args.launch_id} launch",
                       "are invalid. Try to download images of another launch.")
