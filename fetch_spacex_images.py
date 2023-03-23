@@ -28,16 +28,16 @@ def main():
     check_create_path(args.path)
 
     try:
-        links_launch_images = get_links_to_photos(args.launch_id)
+        launch_image_links = get_links_to_photos(args.launch_id)
     except requests.exceptions.HTTPError:
         print('''You've entered incorrect "launch_id".''')
         return
-    if not links_launch_images:
+    if not launch_image_links:
         print(f"No pictures from {args.launch_id} launch.")
         return
 
-    image_quantity = len(links_launch_images)
-    for link in links_launch_images:
+    image_quantity = len(launch_image_links)
+    for link in launch_image_links:
         link_is_valid = True
         try:
             response_image = requests.get(link)

@@ -23,25 +23,25 @@ def main():
     parser.add_argument('-e', '--endless', action="store_true",
                         help='start endless publishing')
     args = parser.parse_args()
-    paths_to_publish_photos = api_tools.find_paths_to_images(
-        args.photo_path, count_of_images="all")
-    time_to_sleep = args.frequency * 3600
+    published_photo_paths = api_tools.find_image_paths(
+        args.photo_path, image_quantity="all")
+    sleep_time = args.frequency * 3600
     if args.endless:
         first_network_error = True
         while True:
-            for photo_path in paths_to_publish_photos:
+            for photo_path in published_photo_paths:
                 try:
                     api_tools.publish_image_as_file(photo_path)
                 except telegram.error.NetworkError:
                     if first_network_error:
-                        first_network_error, time_to_sleep = False, 5
+                        first_network_error, sleep_time = False, 5
                 finally:
-                    time.sleep(time_to_sleep)
-            shuffle(paths_to_publish_photos)
+                    time.sleep(sleep_time)
+            shuffle(published_photo_paths)
     else:
-        for photo_path in paths_to_publish_photos:
+        for photo_path in published_photo_paths:
             api_tools.publish_image_as_file(photo_path)
-            time.sleep(time_to_sleep)
+            time.sleep(sleep_time)
 
 
 if __name__ == "__main__":

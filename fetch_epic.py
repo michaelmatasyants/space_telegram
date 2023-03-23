@@ -11,16 +11,16 @@ def downlaod_epic_images(url, payload, extension, path_to_save):
     about_all_images = requests.get(f"{url}/api/natural", params=payload)
     about_all_images.raise_for_status()
     for about_image in about_all_images.json():
-        date_image = datetime.fromisoformat(
+        image_date = datetime.fromisoformat(
             about_image['date']).strftime("%Y/%m/%d")
-        name_image = f"{about_image['image']}.{extension}"
+        image_name = f"{about_image['image']}.{extension}"
         image_url = "{}/archive/natural/{}/{}/{}".format(
-            url, date_image, extension, name_image)
+            url, image_date, extension, image_name)
         image_response = requests.get(image_url, params=payload)
         image_response.raise_for_status()
         api_tools.save_image(image_response.content,
                              path_to_save,
-                             name_image)
+                             image_name)
 
 
 def main():

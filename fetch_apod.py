@@ -7,10 +7,10 @@ from dotenv import find_dotenv, load_dotenv
 import os
 
 
-def download_apod(image_link, path_to_save):
+def download_apod(image_link, to_save_path):
     image_response = requests.get(image_link)
     image_response.raise_for_status()
-    api_tools.save_image(image_response.content, path_to_save,
+    api_tools.save_image(image_response.content, to_save_path,
                          ''.join(api_tools.get_filename_extension(image_link)))
 
 
@@ -48,7 +48,8 @@ def main():
                                       a few APOD""")
     args = image_parser.parse_args()
     if not is_correct_date_format(args.date, args.start_date, args.end_date):
-        return print("Please, make sure that the date format is correct.")
+        print("Please, make sure that the date format is correct.")
+        return
     api_tools.check_create_path(args.path)
     url = "https://api.nasa.gov/planetary/apod"
 
@@ -86,14 +87,14 @@ def main():
         except requests.exceptions.HTTPError as http_err:
             return print("Please, make sure that the NASA_API_KEY you've",
                          f"entered is correct.\n{http_err}")
-        links_apod = []
+        apod_links = []
         for response in apod_response.json():
             if response['media_type'] == 'image':
                 try:
-                    links_apod.append(response["hdurl"])
+                    apod_links.append(response["hdurl"])
                 except KeyError:
                     print(f"There is no picture for {args.date}.")
-        for image_link in links_apod:
+        for image_link in apod_links:
             download_apod(image_link, args.path)
 
 

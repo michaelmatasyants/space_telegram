@@ -22,10 +22,10 @@ def main():
             '.png', '.jpeg', '.jpg'
             )):
         fetch_apod.main()
-        photo_to_publish = api_tools.find_paths_to_images(args.photo_path)
-        api_tools.publish_image_as_file(photo_to_publish)
-        os.remove(photo_to_publish)
-        print(f"The {photo_to_publish} file was published and deleted after")
+        published_photo = api_tools.find_image_paths(args.photo_path)
+        api_tools.publish_image_as_file(published_photo)
+        os.remove(published_photo)
+        print(f"The {published_photo} file was published and deleted after")
     else:
         api_tools.publish_image_as_file(args.photo_path)
 
