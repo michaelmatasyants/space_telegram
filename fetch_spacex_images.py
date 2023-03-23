@@ -30,27 +30,30 @@ def main():
     try:
         links_launch_images = get_links_to_photos(args.launch_id)
     except requests.exceptions.HTTPError:
-        return print('''You've entered incorrect "launch_id".''')
-    if links_launch_images:
-        image_quantity = len(links_launch_images)
-        for link in links_launch_images:
-            link_is_valid = True
-            try:
-                response_image = requests.get(link)
-                response_image.raise_for_status()
-            except requests.exceptions.HTTPError:
-                link_is_valid = False
-                image_quantity -= 1
-            if link_is_valid:
-                save_image(response_image.content, args.path,
-                           '{}_{}'.format(
-                    args.launch_id, "".join(get_filename_extension(link)))
-                    )
-            elif not image_quantity:
-                print(f"All links to images from {args.launch_id} launch",
-                      "are invalid. Try to download images of another launch.")
-    else:
+        print('''You've entered incorrect "launch_id".''')
+        return
+    if not links_launch_images:
         print(f"No pictures from {args.launch_id} launch.")
+        return
+
+    image_quantity = len(links_launch_images)
+    for link in links_launch_images:
+        link_is_valid = True
+        try:
+            response_image = requests.get(link)
+            response_image.raise_for_status()
+        except requests.exceptions.HTTPError:
+            link_is_valid = False
+            image_quantity -= 1
+        if link_is_valid:
+            save_image(response_image.content, args.path,
+                       '{}_{}'.format(args.launch_id, "".join(
+                            get_filename_extension(link)))
+                       )
+        elif not image_quantity:
+            print(f"All links to images from {args.launch_id} launch",
+                  "are invalid. Try to download images of another launch.")
+            return
 
 
 if __name__ == "__main__":
