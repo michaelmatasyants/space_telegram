@@ -30,7 +30,7 @@ def main():
     try:
         links_launch_images = get_links_to_photos(args.launch_id)
     except requests.exceptions.HTTPError:
-        print('''You've entered incorrect "launch_id".''')
+        return print('''You've entered incorrect "launch_id".''')
     if links_launch_images:
         image_quantity = len(links_launch_images)
         for link in links_launch_images:
