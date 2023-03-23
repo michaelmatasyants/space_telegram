@@ -35,7 +35,7 @@ def main():
                        the project directory. If such a folder doesn't exist,
                        it'll be created automatically.'''
     )
-    image_parser.add_argument("-p", "--path", default='images', type=Path,
+    image_parser.add_argument("-p", "--path", default=Path('images'),
                               help="enter path to save the image")
     image_parser.add_argument("-d", "--date",
                               help='''enter date (YYYY-MM-DD) to download
@@ -49,7 +49,7 @@ def main():
     args = image_parser.parse_args()
     if not is_correct_date_format(args.date, args.start_date, args.end_date):
         return print("Please, make sure that the date format is correct.")
-    api_tools.check_create_path(args.path)
+    api_tools.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/planetary/apod"
 
     if args.start_date is None and args.end_date is None:
@@ -73,7 +73,7 @@ def main():
             except KeyError:
                 return print(f"There is no picture for {args.date}.",
                              "Please try to enter any another date.")
-            download_apod(image_link, args.path)
+            download_apod(image_link, Path(args.path))
     else:
         payload = {
             "api_key": f"{nasa_api_key}",
@@ -94,7 +94,7 @@ def main():
                 except KeyError:
                     print(f"There is no picture for {args.date}.")
         for image_link in links_apod:
-            download_apod(image_link, args.path)
+            download_apod(image_link, Path(args.path))
 
 
 if __name__ == "__main__":

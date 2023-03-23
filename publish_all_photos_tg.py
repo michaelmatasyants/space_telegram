@@ -14,8 +14,7 @@ def main():
                     have all been published until you stop, set '--endless'
                     or '-e' optional argument.'''
     )
-    parser.add_argument('photo_path', type=Path,
-                        help='''path to the directory with the
+    parser.add_argument('photo_path', help='''path to the directory with the
                         photos to be published''')
     parser.add_argument('-f', '--frequency', default=4, type=float,
                         help='''frequency of publishing photos on Telegram
@@ -24,7 +23,7 @@ def main():
                         help='start endless publishing')
     args = parser.parse_args()
     paths_to_publish_photos = api_tools.find_paths_to_images(
-        args.photo_path, count_of_images="all")
+        Path(args.photo_path), count_of_images="all")
     time_to_sleep = args.frequency * 3600
     if args.endless:
         first_network_error = True

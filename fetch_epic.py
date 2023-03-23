@@ -19,7 +19,7 @@ def downlaod_epic_images(url, payload, extension, path_to_save):
         image_response = requests.get(image_url, params=payload)
         image_response.raise_for_status()
         api_tools.save_image(image_response.content,
-                             path_to_save,
+                             Path(path_to_save),
                              name_image)
 
 
@@ -35,12 +35,12 @@ def main():
                        the project directory. If such a folder doesn't exist,
                        it'll be created automatically.'''
     )
-    image_parser.add_argument("-p", "--path", default='images', type=Path,
+    image_parser.add_argument("-p", "--path", default=Path('images'),
                               help="enter path to save the image")
     image_parser.add_argument("-x", "--extension", default='png',
                               help="enter extension for the image png or jpg")
     args = image_parser.parse_args()
-    api_tools.check_create_path(args.path)
+    api_tools.check_create_path(Path(args.path))
     url = "https://api.nasa.gov/EPIC"
     payload = {"api_key": f"{os.environ['NASA_API_KEY']}"}
     try:
