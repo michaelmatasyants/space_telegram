@@ -96,7 +96,7 @@ Each of the scripts individually:
     >>> python3 fetch_spacex_images.py -i 5eb87d42ffd86e000604b384 -p path/to/save/images/
     ```
 
-4. The `publish_1photo_tg.py` script publishes one photo from the specified directory path. If the path isn't given, the program will download APOD for the current day and publish it. After publishing, the picture will be deleted from the PC.
+4. The `publish_1photo_tg.py` script publishes one photo from the specified path or directory. If the path isn't given, the program will download APOD for the current day and publish it. After publishing, the picture will be deleted from the PC.
 
     Post the photo to the Telegram channel by specifying the photo path `enter/the/path/to/the/photo.png` (сhat_id of the channel must be set in the `.env` file.):
 

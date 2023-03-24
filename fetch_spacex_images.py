@@ -4,11 +4,26 @@ import argparse
 from api_tools import save_image, check_create_path, get_filename_extension
 
 
-def get_links_to_photos(launch_id):
-    url = "https://api.spacexdata.com/v5/launches"
-    response = requests.get(f'{url}/{launch_id}')
+def get_links_to_photos(launch_id: str) -> list:
+    response = requests.get(
+        f'https://api.spacexdata.com/v5/launches/{launch_id}')
     response.raise_for_status()
     return response.json()["links"]["flickr"]["original"]
+
+
+def get_count_of_downloaded_images(launch_image_links: list,
+                                   launch_id: str, save_path: Path,
+                                   image_quantity=0) -> int:
+    for link in launch_image_links:
+        try:
+            response_image = requests.get(link)
+            response_image.raise_for_status()
+            image_quantity += 1
+        except requests.exceptions.HTTPError:
+            continue
+        save_image(response_image.content, save_path,
+                   f'{launch_id}_{"".join(get_filename_extension(link))}')
+    return image_quantity
 
 
 def main():
@@ -35,25 +50,12 @@ def main():
     if not launch_image_links:
         print(f"No pictures from {args.launch_id} launch.")
         return
-
-    image_quantity = len(launch_image_links)
-    for link in launch_image_links:
-        link_is_valid = True
-        try:
-            response_image = requests.get(link)
-            response_image.raise_for_status()
-        except requests.exceptions.HTTPError:
-            link_is_valid = False
-            image_quantity -= 1
-        if link_is_valid:
-            save_image(response_image.content, args.path,
-                       '{}_{}'.format(args.launch_id, "".join(
-                            get_filename_extension(link)))
-                       )
-        elif not image_quantity:
-            print(f"All links to images from {args.launch_id} launch",
-                  "are invalid. Try to download images of another launch.")
-            return
+    image_quantity = get_count_of_downloaded_images(launch_image_links,
+                                                    args.launch_id,
+                                                    args.path)
+    if not image_quantity:
+        print(f"All links to images from {args.launch_id} launch",
+              "are invalid. Try to download images of another launch.")
 
 
 if __name__ == "__main__":

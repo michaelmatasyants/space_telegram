@@ -46,8 +46,9 @@ def main():
     try:
         downlaod_epic_images(url, payload, args.extension, args.path)
     except requests.exceptions.HTTPError as http_err:
-        return print("Please, make sure that the NASA_API_KEY you've entered",
-                     f"is correct.\n{http_err}")
+        print("Please, make sure that the NASA_API_KEY you've entered",
+              f"is correct.\n{http_err}")
+        return
 
 
 if __name__ == "__main__":
