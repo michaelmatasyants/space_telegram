@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv, find_dotenv
 from urllib.parse import urlparse, unquote
 from pathlib import Path
 from io import BytesIO
@@ -20,22 +19,17 @@ def check_create_path(save_path: Path):
 def save_image(bytes_image, save_path, image_name="image.png"):
     with Image.open(BytesIO(bytes_image)) as new_image:
         new_image.save(Path(save_path, image_name))
-    print(f'File {image_name} has been successfully downloaded to',
-          save_path)
 
 
-def publish_message(text: str):
-    load_dotenv(find_dotenv())
-    bot = telegram.Bot(token=os.environ['TG_BOT_TOKEN'])
-    bot.send_message(chat_id=os.environ['TG_CHAT_ID'], text=text)
+def publish_message(text: str, tg_bot_token: str, tg_chat_id: str):
+    bot = telegram.Bot(tg_bot_token)
+    bot.send_message(tg_chat_id, text=text)
 
 
-def publish_image_as_file(photo_path: Path):
-    load_dotenv(find_dotenv())
-    bot = telegram.Bot(token=os.environ['TG_BOT_TOKEN'])
+def publish_image_as_file(photo_path: Path, tg_bot_token: str, tg_chat_id: str):
+    bot = telegram.Bot(tg_bot_token)
     with open(photo_path, 'rb') as new_image:
-        bot.send_document(chat_id=os.environ['TG_CHAT_ID'],
-                          document=new_image)
+        bot.send_document(tg_chat_id, document=new_image)
 
 
 def find_image_paths(searched_path: Path, image_quantity=1) -> Path | list:

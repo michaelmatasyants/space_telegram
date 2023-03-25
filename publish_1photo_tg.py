@@ -1,8 +1,10 @@
 import argparse
-from api_tools import find_image_paths, publish_image_as_file
 import os
 import fetch_apod
 from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+from api_tools import (find_image_paths, publish_image_as_file,
+                       check_create_path)
 
 
 def is_photo_path(photo_path: Path) -> bool:
@@ -19,6 +21,8 @@ def directory_contains_photo(direcory: Path) -> bool:
 
 
 def main():
+    load_dotenv(find_dotenv())
+    bot_token, chat_id = os.environ['TG_BOT_TOKEN'], os.environ['TG_CHAT_ID']
     parser = argparse.ArgumentParser(
         description="""The program publishes one picture from given path or
                        directory. But if the path isn't given program will
@@ -30,17 +34,17 @@ def main():
                         published''')
     args = parser.parse_args()
     if is_photo_path(args.photo_path):
-        publish_image_as_file(args.args.photo_path)
+        publish_image_as_file(args.photo_path, bot_token, chat_id)
         return
-    elif directory_contains_photo(args.photo):
-        publish_image_as_file(find_image_paths(args.photo_path))
+    if directory_contains_photo(args.photo_path):
+        publish_image_as_file(find_image_paths(args.photo_path),
+                              bot_token, chat_id)
         return
     fetch_apod.main()
     published_photo = find_image_paths(args.photo_path)
-    publish_image_as_file(published_photo)
+    publish_image_as_file(published_photo, bot_token, chat_id)
     os.remove(published_photo)
-    print(f"The {published_photo} file was published and deleted after.")
-    return
+    print("The file was deleted from your computer after publication")
 
 
 if __name__ == "__main__":

@@ -7,7 +7,8 @@ from dotenv import find_dotenv, load_dotenv
 import os
 
 
-def downlaod_epic_images(url, payload, extension, path_to_save):
+def downlaod_epic_images(payload: dict, extension: str, path_to_save: Path):
+    url = "https://api.nasa.gov/EPIC"
     about_all_images = requests.get(f"{url}/api/natural", params=payload)
     about_all_images.raise_for_status()
     for about_image in about_all_images.json():
@@ -21,6 +22,8 @@ def downlaod_epic_images(url, payload, extension, path_to_save):
         api_tools.save_image(image_response.content,
                              path_to_save,
                              image_name)
+        print(f'File {image_name} has been successfully downloaded to',
+              path_to_save)
 
 
 def main():
@@ -41,14 +44,12 @@ def main():
                               help="enter extension for the image png or jpg")
     args = image_parser.parse_args()
     api_tools.check_create_path(args.path)
-    url = "https://api.nasa.gov/EPIC"
     payload = {"api_key": f"{os.environ['NASA_API_KEY']}"}
     try:
-        downlaod_epic_images(url, payload, args.extension, args.path)
+        downlaod_epic_images(payload, args.extension, args.path)
     except requests.exceptions.HTTPError as http_err:
         print("Please, make sure that the NASA_API_KEY you've entered",
               f"is correct.\n{http_err}")
-        return
 
 
 if __name__ == "__main__":

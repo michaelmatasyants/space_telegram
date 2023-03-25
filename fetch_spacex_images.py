@@ -21,8 +21,10 @@ def get_count_of_downloaded_images(launch_image_links: list,
             image_quantity += 1
         except requests.exceptions.HTTPError:
             continue
-        save_image(response_image.content, save_path,
-                   f'{launch_id}_{"".join(get_filename_extension(link))}')
+        image_name = f'{launch_id}_{"".join(get_filename_extension(link))}'
+        save_image(response_image.content, save_path, image_name)
+        print(f'File {image_name} has been successfully downloaded to',
+              save_path)
     return image_quantity
 
 

@@ -65,8 +65,10 @@ def get_links_to_all_photos(apod_response: requests.models.Response) -> list:
 def download_apod(image_link: str, to_save_path: Path):
     image_response = requests.get(image_link)
     image_response.raise_for_status()
-    api_tools.save_image(image_response.content, to_save_path,
-                         ''.join(api_tools.get_filename_extension(image_link)))
+    image_name = ''.join(api_tools.get_filename_extension(image_link))
+    api_tools.save_image(image_response.content, to_save_path, image_name)
+    print(f'File {image_name} has been successfully downloaded to',
+          to_save_path)
 
 
 def download_all_apods(image_links, to_save_path):

@@ -4,20 +4,24 @@ import time
 from random import shuffle
 from pathlib import Path
 import telegram
+from dotenv import load_dotenv, find_dotenv
+import os
 
 
-def post_photos(all_photo_paths: list, sleep_time: float):
+def post_photos(all_photo_paths: list, sleep_time: float,
+                bot_token: str, chat_id:str):
     for photo_path in all_photo_paths:
-        api_tools.publish_image_as_file(photo_path)
+        api_tools.publish_image_as_file(photo_path, bot_token, chat_id)
         time.sleep(sleep_time)
 
 
-def post_nonstop_photos(all_photo_paths: list, post_frequency: float):
+def post_nonstop_photos(all_photo_paths: list, post_frequency: float,
+                        bot_token: str, chat_id:str):
     sleep_time = post_frequency
     first_network_error = True
     while True:
         try:
-            post_photos(all_photo_paths, sleep_time)
+            post_photos(all_photo_paths, sleep_time, bot_token, chat_id)
         except telegram.error.NetworkError:
             if first_network_error:
                 first_network_error, sleep_time = False, 5
@@ -26,6 +30,8 @@ def post_nonstop_photos(all_photo_paths: list, post_frequency: float):
 
 
 def main():
+    load_dotenv(find_dotenv())
+    bot_token, chat_id = os.environ['TG_BOT_TOKEN'], os.environ['TG_CHAT_ID']
     parser = argparse.ArgumentParser(
         description='''The program publishes all pictures from given directory
                     path at fixed interval, every 4 hours (by default).
@@ -46,11 +52,10 @@ def main():
     published_photo_paths = api_tools.find_image_paths(args.photo_path,
                                                        image_quantity="all")
     if not args.endless:
-        post_photos(published_photo_paths, sleep_time)
+        post_photos(published_photo_paths, sleep_time, bot_token, chat_id)
         return
-    if args.endless:
-        print("Press 'Ctrl + C' to stop the script.")
-        post_nonstop_photos(published_photo_paths, sleep_time)
+    print("Press 'Ctrl + C' to stop the script.")
+    post_nonstop_photos(published_photo_paths, sleep_time, bot_token, chat_id)
 
 
 if __name__ == "__main__":
