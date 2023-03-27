@@ -26,7 +26,8 @@ def publish_message(text: str, tg_bot_token: str, tg_chat_id: str):
     bot.send_message(tg_chat_id, text=text)
 
 
-def publish_image_as_file(photo_path: Path, tg_bot_token: str, tg_chat_id: str):
+def publish_image_as_file(photo_path: Path, tg_bot_token: str,
+                          tg_chat_id: str):
     bot = telegram.Bot(tg_bot_token)
     with open(photo_path, 'rb') as new_image:
         bot.send_document(tg_chat_id, document=new_image)

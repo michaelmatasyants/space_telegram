@@ -55,10 +55,9 @@ def get_link_to_photo(apod_response: dict | requests.models.Response) -> (
 
 
 def get_links_to_all_photos(apod_response: requests.models.Response) -> list:
-    apod_links = []
-    for response in apod_response.json():
-        if get_link_to_photo(response) is not None:
-            apod_links.append(get_link_to_photo(response))
+    apod_links = [get_link_to_photo(response)
+                  for response in apod_response.json()
+                  if get_link_to_photo(response) is not None]
     return apod_links
 
 
