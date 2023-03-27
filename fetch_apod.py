@@ -45,13 +45,8 @@ def get_apod_response(url: str, payload: dict) -> (
 
 def get_link_to_photo(apod_response: dict | requests.models.Response) -> (
         str | None):
-    # The next day's photo isn't immediately available when that day occurs.
     if apod_response['media_type'] == 'image':
-        try:
-            image_link = apod_response["hdurl"]
-            return image_link
-        except KeyError:
-            return
+        return apod_response.get('hdurl')
 
 
 def get_links_to_all_photos(apod_response: requests.models.Response) -> list:
