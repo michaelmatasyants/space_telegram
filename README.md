@@ -116,7 +116,7 @@ Each of the scripts individually:
     >>> python3 publish_all_photos_tg.py enter/the/path/to/the/images -f 6
     ```
 
-    Post all the photos located in the `enter/the/path/to/the/images` directory and subdirectories. Loop publish photos until the script wouldn't be soped.
+    Post all the photos located in the `enter/the/path/to/the/images` directory and subdirectories. Loop publish photos until the script wouldn't be stoped.
     ```Console
     >>> python3 publish_all_photos_tg.py enter/the/path/to/the/images -e
     ```

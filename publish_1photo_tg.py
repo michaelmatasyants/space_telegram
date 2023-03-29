@@ -1,23 +1,18 @@
+from pathlib import Path
 import argparse
 import os
-import fetch_apod
-from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
+import fetch_apod
 from api_tools import (find_image_paths, publish_image_as_file,
-                       check_create_path)
+                       has_photo_extension)
 
 
 def is_photo_path(photo_path: Path) -> bool:
-    if (os.path.isfile(photo_path) and
-            os.path.splitext(photo_path)[-1] in ('.png', '.jpeg', '.jpg')):
-        return True
-    return False
+    return os.path.isfile(photo_path) and has_photo_extension(photo_path)
 
 
 def directory_contains_photo(direcory: Path) -> bool:
-    if find_image_paths(direcory, image_quantity=1):
-        return True
-    return False
+    return find_image_paths(direcory, image_quantity=1)
 
 
 def main():

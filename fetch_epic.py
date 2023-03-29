@@ -1,29 +1,27 @@
-import requests
-import api_tools
+import os
 import argparse
 from datetime import datetime
 from pathlib import Path
+import requests
 from dotenv import find_dotenv, load_dotenv
-import os
+from api_tools import check_create_path, download_all_images, get_response
 
 
-def downlaod_epic_images(payload: dict, extension: str, path_to_save: Path):
-    url = "https://api.nasa.gov/EPIC"
-    about_all_images = requests.get(f"{url}/api/natural", params=payload)
-    about_all_images.raise_for_status()
-    for about_image in about_all_images.json():
-        image_date = datetime.fromisoformat(
-            about_image['date']).strftime("%Y/%m/%d")
-        image_name = f"{about_image['image']}.{extension}"
-        image_url = "{}/archive/natural/{}/{}/{}".format(
-            url, image_date, extension, image_name)
-        image_response = requests.get(image_url, params=payload)
-        image_response.raise_for_status()
-        api_tools.save_image(image_response.content,
-                             path_to_save,
-                             image_name)
-        print(f'File {image_name} has been successfully downloaded to',
-              path_to_save)
+def get_link_to_photo(about_image_response: dict, extension: str) -> (
+        str | None):
+    image_date = datetime.fromisoformat(about_image_response.get('date')
+        ).strftime("%Y/%m/%d")
+    image_name = f"{about_image_response['image']}.{extension}"
+    image_link = "https://api.nasa.gov/EPIC/archive/natural/{}/{}/{}".format(
+                    image_date, extension, image_name)
+    return image_link
+
+
+def get_links_to_all_photos(about_images_response: requests.models.Response,
+                            extension: str) -> list:
+    image_links = [get_link_to_photo(about_image_response, extension)
+                   for about_image_response in about_images_response.json()]
+    return image_links
 
 
 def main():
@@ -43,13 +41,20 @@ def main():
     image_parser.add_argument("-x", "--extension", default='png',
                               help="enter extension for the image png or jpg")
     args = image_parser.parse_args()
-    api_tools.check_create_path(args.path)
+    check_create_path(args.path)
     payload = {"api_key": f"{os.environ['NASA_API_KEY']}"}
     try:
-        downlaod_epic_images(payload, args.extension, args.path)
+        about_images_response = get_response(
+            "https://api.nasa.gov/EPIC/api/natural", payload)
     except requests.exceptions.HTTPError as http_err:
-        print("Please, make sure that the NASA_API_KEY you've entered",
-              f"is correct.\n{http_err}")
+        print(f"{http_err}\n", "Please, make sure that the NASA_API_KEY",
+              "you've entered in .env file is correct.")
+        return
+    epic_links = get_links_to_all_photos(about_images_response, args.extension)
+    downloaded_image_names = download_all_images(epic_links, args.path,
+                                                 payload=payload)
+    print(*downloaded_image_names, sep=', ', end=' ')
+    print(f'successfully downloaded to {args.path}.')
 
 
 if __name__ == "__main__":
